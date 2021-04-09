@@ -91,7 +91,7 @@ export default {
          await this.userLogin(this.form).then(async ()=>{
              await this.getUser()
          }).then(()=>{
-             this.$router.push({name : "admin.dashboard"}).catch(()=>{});
+             this.$router.push({name : "home"}).catch(()=>{});
          })
       }
   },

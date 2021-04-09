@@ -10,4 +10,4 @@
 |
  */
 
-Route::any('{any?}/{any1?}/{any2?}/{any3?}', fn() => view("app"));
+Route::any('{any?}/{any1?}/{any2?}/{any3?}', fn() => view("app"))->name('home');

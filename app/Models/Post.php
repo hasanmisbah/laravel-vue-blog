@@ -10,6 +10,8 @@ class Post extends Model
     use HasFactory;
     protected $guarded = ['id'];
 
+    protected $with = ['user', 'categories', 'tags'];
+
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
@@ -22,6 +24,6 @@ class Post extends Model
 
     public function user()
     {
-        $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
     }
 }

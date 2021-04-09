@@ -8,7 +8,7 @@ export default {
             email: null,
             role: null
         },
-        isLoggedIn : false,
+        isLoggedIn: false,
         token: localStorage.getItem("blog_token") || null
     },
     getters: {
@@ -34,45 +34,57 @@ export default {
                 let { id, name, email, user_role } = data;
                 let user = { id, name, email, user_role };
                 commit("SET_AUTH_USER", user);
+            }).catch(e=>{
+                localStorage.removeItem("blog_token");
+                delete http.defaults.headers.common["Authorization"];
             });
         },
         async login({ dispatch, state }, user) {
             localStorage.removeItem("blog_token");
-            let token = ""
+            let token = "";
             return new Promise((resolve, reject) => {
-                http.post("/login", user).then(({ data }) => {
-                    token = data.token
-                    state.token = token;
-                    localStorage.setItem("blog_token", token);
-                    resolve({messages : "Successfully Logged in"});
-                }, error => {
-                    reject(error)
-                });
-            })
-        },
-        async logout({state}){
-            return new Promise((resolve, reject) => {
-                http.post('logout').then(respose => {
-                    localStorage.removeItem("blog_token");
-                    state.isLoggedIn = false
-                    state.user = {
-                        userID: null,
-                        name: null,
-                        email: null,
-                        role: null
+                http.post("/login", user).then(
+                    ({ data }) => {
+                        token = data.token;
+                        state.token = token;
+                        localStorage.setItem("blog_token", token);
+                        http.defaults.headers.common[
+                            "Authorization"
+                        ] = `Bearer ${token}`;
+                        resolve({ messages: "Successfully Logged in" });
+                    },
+                    error => {
+                        reject(error);
                     }
-                    resolve({messages : 'Successfully Logged out'})
-                }, error => {
-                    reject(error)
-                }
-                )
-            })
+                );
+            });
         },
-        async initApp({state, dispatch}){
-            if(state.token && !state.isLoggedIn){
-                await dispatch('setAuthUser')
+        async logout({ state }) {
+            return new Promise((resolve, reject) => {
+                http.post("logout").then(
+                    () => {
+                        localStorage.removeItem("blog_token");
+                        delete http.defaults.headers.common["Authorization"];
+                        state.isLoggedIn = false;
+                        state.user = {
+                            userID: null,
+                            name: null,
+                            email: null,
+                            role: null
+                        };
+                        resolve({ messages: "Successfully Logged out" });
+                    },
+                    error => {
+                        reject(error);
+                    }
+                );
+            });
+        },
+        async initApp({ state, dispatch }) {
+            if (state.token && !state.isLoggedIn) {
+                await dispatch("setAuthUser");
             }
-            return
+            return;
         }
     }
-};
+}

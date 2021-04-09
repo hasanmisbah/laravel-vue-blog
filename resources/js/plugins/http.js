@@ -1,7 +1,6 @@
 import axios from "axios";
 import Vue from "vue";
-import store from '../store';
-let token = store.getters['auth/getToken']
+let token = localStorage.getItem("blog_token") || null
 
 const http = axios.create({
     baseURL: "http://vue-blog.test/api/",
@@ -13,7 +12,7 @@ const http = axios.create({
 });
 if (token) {
     http.interceptors.request.use(config => {
-        config.headers.Authorization = `Bearer ${token}`;
+        config.headers.common['Authorization'] = `Bearer ${token}`;
         return config;
     });
 }

@@ -4,9 +4,6 @@
 <script>
 import {mapGetters, mapActions} from 'vuex'
 export default {
-    data : ()=>({
-
-    }),
     computed : {
         ...mapGetters({
             token : 'auth/getToken'
@@ -22,7 +19,5 @@ export default {
             this.getUser()
         }
     }
-
-
 }
 </script>
